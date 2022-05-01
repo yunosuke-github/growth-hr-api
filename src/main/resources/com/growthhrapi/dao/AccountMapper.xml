@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.growthhrapi.dao.AccountDao">
+    <!-- SELECT -->
+    <select id="get" resultType="com.growthhrapi.entity.Account" parameterType="com.growthhrapi.selector.AccountSelector">
+        SELECT * FROM ACCOUNT
+        <where>
+            DELETED = 0
+            <if test="id != null">
+                AND ACCOUNT_ID = #{id}
+            </if>
+            <if test="ids != null and ids.size() > 0">
+                AND ACCOUNT_ID IN
+                    <foreach collection="ids" item="id" open="(" separator="," close=")">
+                        #{id}
+                    </foreach>
+            </if>
+            <include refid="com.growthhrapi.dao.CommonDao.QueryConditions"><property name="queries" value="queries"/></include>
+        </where>
+    </select>
+</mapper>

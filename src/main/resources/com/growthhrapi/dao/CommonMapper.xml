@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.growthhrapi.dao.CommonDao">
+    <sql id="QueryConditions">
+        <if test="queries != null and queries.size() > 0">
+            <foreach collection="queries" item="query">
+                AND ${query.field}
+                <choose>
+                    <when test="query.conditions == 'EQUAL'">=</when>
+                    <when test="query.conditions == 'NOT_EQUAL'">!=</when>
+                    <when test="query.conditions == 'LIKE'">LIKE</when>
+                    <when test="query.conditions == 'NOT_LIKE'">NOT LIKE</when>
+                    <when test="query.conditions == 'GREATER'">></when>
+                    <when test="query.conditions == 'GREATER_EQUAL'">>=</when>
+                    <when test="query.conditions == 'SMALLER'"><![CDATA[ < ]]></when>
+                    <when test="query.conditions == 'SMALLER_EQUAL'"><![CDATA[ <= ]]> </when>
+                    <when test="query.conditions == 'IS_NULL'">IS NULL</when>
+                    <when test="query.conditions == 'IS_NOT_NULL'">IS NOT NULL</when>
+                </choose>
+                <choose>
+                    <when test="query.conditions == 'LIKE' or query.conditions == 'NOT_LIKE'">
+                        <bind name="pattern" value="'%' + query.value + '%'" />
+                        #{pattern}
+                    </when>
+                    <when test="query.conditions == 'IS_NULL' or query.conditions == 'IS_NOT_NULL'"></when>
+                    <otherwise>#{query.value}</otherwise>
+                </choose>
+            </foreach>
+        </if>
+    </sql>
+</mapper>
